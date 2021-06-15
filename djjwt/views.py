@@ -1,3 +1,5 @@
+import json
+
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.utils.decorators import method_decorator
@@ -24,7 +26,8 @@ class TokenView(View):
         return super().dispatch(*args, **kwargs)
 
     def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.POST)
+        data = request.POST or json.loads(request.body)
+        serializer = self.serializer_class(data=data)
 
         try:
             serializer.is_valid(raise_exception=True)
